@@ -1,5 +1,6 @@
 # Word-Predicting-Web-Application  
 As part of the Data Science Specialization by John Hopkins on Coursera, this Caspstone Project allows us to showcase our skills learned throughout the specialization by developing a data product in the form of a Word Predicting Web Application using ShinyR.  
+[Link_to_the_Application](https://ayushjain2699.shinyapps.io/Word/)
 
 ## About the files uploaded  
 ### Creating_the_corpus.R  
