@@ -1,0 +1,45 @@
+---
+title: "Capstone Project Final Report"
+author: "Ayush Jain"
+date: "5/26/2020"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Introduction 
+I have developed a web application using RStudio Shiny named **WordPredictR** that predicts the next probable words as soon as the user starts typing.  
+
+The app gives five word options in the order of their likelihood depending upon the words that the user have typed.  
+```{r pressure, echo=FALSE, fig.cap="WordPredictR", out.width = '70%',out.height='70%'}
+knitr::include_graphics("D:/Docs/personal/Data Science/datasciencecoursera/CAPSTONE/app.png")
+```
+## The Data Set 
+The corpus that was used to build this app comes from three source files namely blogs, news and the twitter tweets, which were provided by the swiftkey officials for this project.  
+For better accuracy I have also incorporated the data of reviews from amazon taken from their site.  
+Basic cleaning and preprocessing steps were performed before feeding it to the algorithm.  
+
+NOTE: ***All of the data*** were used to build the model and algorithm for the web App. 
+
+```{r,echo = F,comment=""}
+load("corpus.Rdata")
+head(tri,4)
+```
+## The Algorithm 
+To keep the app efficient a simple model of **“Stupid Backoff”** was implemented to predict the next word which just calculates the probability of the next word given a set of words.  
+
+I have implemented a 5-gram model to predict the next word and if the entered word length is less than four then lower-grams models were implemented.  
+  
+  
+![](D:/Docs/personal/Data Science/datasciencecoursera/CAPSTONE/backoff.png)
+
+## Efficiency of the App 
+The counts of the n-grams and the scores were already calculated and stored so that when the user enters a text it just needs to compare and give the best 5 scores, hence improving the efficiency.  
+
+- Data Tables were used to store the data set which is much faster than data frames and also data can be accessed easily using indexing.  
+- Complete data from the provided corpus as well as extra data from amazon were used that enhances the performance of the algorithm.  
+- The WordPredictR has an out of sample accuracy of around 40 percent.  
+
+

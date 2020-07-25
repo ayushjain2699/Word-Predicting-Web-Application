@@ -1,0 +1,81 @@
+Milestone Report
+====================================
+
+## Introduction  
+The goal of the report is to explain the exploratory analysis and the goals for the eventual app and algorithm. I have briefly summarized my algorithm and the algorithm in it.  
+It gives a basic summary statistics about the data set.  
+
+## The Data Set  
+To get started with the Data Science Capstone Project.I’ve download the Coursera Swiftkey Dataset. After extraction, I have chosen to work with folder en_US which contains following three files:
+
+- en_US.blogs.txt
+- en_US.news.txt
+- en_US.twitter.txt.
+
+### Summary of the data set  
+
+```{r,echo=F,cache = T,message=F}
+twitter = suppressMessages(readLines("./final/en_US/en_US.twitter.txt",skipNul = T))
+blogs = readLines("./final/en_US/en_US.blogs.txt",skipNul = T)
+news = suppressMessages(readLines("./final/en_US/en_US.news.txt",skipNul = T))
+file_names = c("en_US.twitter","en_US.blogs.txt","en_US.news")
+library(stringi)
+blog.words = stri_count_words(blogs)
+news.words = stri_count_words(news)
+twitter.words = stri_count_words(twitter)
+df = data.frame(name = file_names,size_file = c("200Mb","196Mb","160Mb"),num.words = c(sum(blog.words),sum(news.words),sum(twitter.words)),num.length = c(length(blogs),length(news),length(twitter)))
+df
+```
+
+Since the data set is quite large and it would be very memory intensive process to preprocess such a large data set.  
+So, I divided the data set into 25 small data set that constitues the entire corpus together. All the preprocess and tokenization steps are performed on these files and the results are then compiled into one major data table.  
+
+## Preprocessing the Data set  
+
+The following preprocessing steps were done (in order).  
+1. Removing URLs.  
+2. Removing symbols and non-ascii charecters.   
+3. Removing Hashtags and punctuations.  
+4. Removing Numbers.  
+5. Removing Profanity words.  
+
+Note: I haven't removed the stop words because in our project stopwords can be useful in predicting the next words.  
+```{r,echo = F,cache = T}
+load("final_data.Rdata")
+```
+
+### Building N-Grams  
+After all the preprocessing and cleaning steps, various N-Grams were tokens were made(N = 2,3,4,5) to compare the position of words relative to others.  
+Here's the look of a sample of 3-gram data table.  
+```{r,echo = F}
+head(dt_tri)
+```
+
+### Most Frequent N-Grams  
+```{r,echo = F,cache = T}
+library(ggplot2)
+g = ggplot(dt_uni[1:10,],aes(y = reorder(feature,freq),x = freq))
+g+geom_bar(stat = "identity",color = "blue",fill = "black")+labs(title = "Top 10 Unigrams")
+
+g = ggplot(dt_bi[1:10,],aes(y = reorder(feature,freq),x = freq))
+g+geom_bar(stat = "identity",color = "blue",fill = "red")+labs(title = "Top 10 Bigrams")
+
+g = ggplot(dt_tri[1:10,],aes(y = reorder(feature,freq),x = freq))
+g+geom_bar(stat = "identity",color = "black",fill = "blue")+labs(title = "Top 10 Trigrams")
+
+g = ggplot(dt_quad[1:10,],aes(y = reorder(feature,freq),x = freq))
+g+geom_bar(stat = "identity",color = "black",fill = "grey")+labs(title = "Top 10 4-grams")
+
+g = ggplot(dt_pent[1:10,],aes(y = reorder(feature,freq),x = freq))
+g+geom_bar(stat = "identity",color = "black",fill = "brown")+labs(title = "Top 10 5-grams")
+```
+
+***Note that the above N-Grams are built by pruning the N-Grams with a minimum frequency of four.***  
+
+## Strategy for prediction model and Shiny App  
+For the predictive model, I am thinking about using the ***Stupid Backoff*** Model. It is a simple model and can be very fast relative to other algorithms. However it may be a bit inaccurate compared to other algorithms.  
+This algorithm just focuses on the Probabilty of seeing a particular word given the previous set of words.  
+I would be deploying the 5-gram model to predict the text.However if the words entered are less than 4 than i would shift to the lesser_grams models.  
+  
+For the Shiny App, I would keep it simple which will predict the next word and give out the best possible 3 options for the predictions.  
+As soon as the user enter space, three predictions will be shown immediately.  
